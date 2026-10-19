@@ -87,7 +87,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 Historical Geology & Stratigraphy
               </h1>
               <p className="text-xs sm:text-sm text-[#e0eadb] max-w-xl leading-relaxed">
-                Answer questions correctly <strong>twice</strong> in Learn Mode or Practice Exams to reach Mastered. Errors automatically mark terms for review.
+                Test your recall with multiple-choice questions in Learn Mode and Practice Exams. Missed concepts automatically queue for review.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -96,7 +96,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   className="px-4 py-2.5 rounded-xl bg-[#df9f3b] hover:bg-[#c98e32] text-stone-950 font-bold text-xs sm:text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4" />
-                  Start Learn Mode (2x)
+                  Start Learn Mode
                 </button>
                 <button
                   onClick={() => onNavigateToTab('quiz')}

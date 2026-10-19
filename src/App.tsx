@@ -66,7 +66,7 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Answer term via multiple choice (Quizlet Learn or Practice Exam)
+  // Answer term via multiple choice (Active Recall Learn or Practice Exam)
   const handleAnswerTerm = useCallback((termId: string, isCorrect: boolean) => {
     setEngagement((prev) => {
       const { nextState, newLevel } = updateTermOnAnswer(prev, termId, isCorrect);

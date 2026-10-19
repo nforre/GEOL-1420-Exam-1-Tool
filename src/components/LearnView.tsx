@@ -151,13 +151,13 @@ export const LearnView: React.FC<LearnViewProps> = ({
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#eaf1e6] dark:bg-emerald-950/40 text-[#44543d] dark:text-emerald-300 text-xs font-bold mb-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              Quizlet-Style Active Recall
+              Active Recall
             </div>
             <h1 className="text-2xl sm:text-3xl font-serif-vintage font-bold tracking-tight text-stone-900 dark:text-white">
               Learn Mode
             </h1>
             <p className="text-xs text-stone-500 dark:text-stone-400">
-              Answer correctly <strong>twice</strong> to master each term. Errors are automatically flagged for review.
+              Practice active recall for each term. Errors are automatically flagged for review.
             </p>
           </div>
 
@@ -254,7 +254,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
               You Finished This Practice Deck!
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto mt-2">
-              Keep answering until all terms reach <strong>Mastered (2 correct in a row)</strong>.
+              Keep answering until all terms reach <strong>Mastered</strong>.
             </p>
           </div>
 
@@ -325,7 +325,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
                     <Bookmark className={`w-4 h-4 ${bookmarkedCards[currentItem.id] ? 'fill-current' : ''}`} />
                   </button>
 
-                  {/* 2x Mastery Streak Pill */}
+                  {/* Mastery Status Pill */}
                   <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${
                     currentMastery === 'mastered'
                       ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
@@ -333,7 +333,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
                       ? 'bg-amber-100 text-amber-900 border border-amber-300'
                       : 'bg-stone-100 text-stone-600 border border-stone-200'
                   }`}>
-                    {currentMastery === 'mastered' ? '★ Mastered' : currentStreak === 1 ? '1/2 Correct' : '0/2 Mastered'}
+                    {currentMastery === 'mastered' ? '★ Mastered' : currentStreak === 1 ? 'Familiar' : 'Unmastered'}
                   </span>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
                       {selectedOptIdx === correctOptionIdx ? (
                         <>
                           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                          Correct! {currentStreak + 1 >= 2 ? '★ Mastered! (Answered right twice)' : '1 of 2 correct answers needed to master'}
+                          Correct! {currentStreak + 1 >= 2 ? '★ Mastered!' : 'Great job! Keep going.'}
                         </>
                       ) : (
                         <>
@@ -434,7 +434,7 @@ export const LearnView: React.FC<LearnViewProps> = ({
           {/* Bottom Card Index */}
           <div className="flex items-center justify-between text-xs text-stone-400 font-mono px-2">
             <span>Card {currentIdx + 1} of {shuffledDeck.length}</span>
-            <span>Needs 2 correct answers to reach Mastered</span>
+            <span>Active Recall Practice</span>
           </div>
         </div>
       ) : null}

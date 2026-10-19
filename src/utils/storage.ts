@@ -115,8 +115,8 @@ export const saveEngagementState = (state: UserEngagementState) => {
 };
 
 /**
- * Updates a term's mastery level according to Quizlet-style Learn rules:
- * - Answered correctly twice in a row (streak >= 2) -> "mastered"
+ * Updates a term's mastery level according to Active Recall rules:
+ * - Answered correctly (streak >= 2) -> "mastered"
  * - Answered correctly once (streak === 1) -> "reviewing"
  * - Answered incorrectly when previously right (streak > 0 or previously mastered/reviewing) -> changed to "reviewing" (needs review), streak resets to 0
  * - Answered incorrectly when never right before -> flagged as "learning", streak resets to 0

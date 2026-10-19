@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
     colorHex: string;
   }[] = [
     { id: 'dashboard', label: 'Dashboard', tag: 'Overview', colorHex: '#5c7054' },
-    { id: 'learn', label: 'Learn (2x Master)', tag: 'Quizlet Style', colorHex: '#3d7a5a' },
+    { id: 'learn', label: 'Learn', tag: 'Active Recall', colorHex: '#3d7a5a' },
     { id: 'quiz', label: 'Practice Exam', tag: 'Custom Exam', colorHex: '#df9f3b' },
     { id: 'cards', label: 'Flashcards', tag: 'Cards', colorHex: '#c35d45' },
     { id: 'speed', label: 'Speed Match', tag: 'Game', colorHex: '#d87355' },
