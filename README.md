@@ -1,6 +1,6 @@
 # GEOL 1420 Exam 2 Master: Historical Geology & Stratigraphy
 
-An interactive study application, custom exam simulator, animated 3D flashcards, and engagement dashboard built for Texas State University GEOL 1420 Exam 2.
+An interactive study application, custom exam simulator, animated 3D flashcards, and engagement dashboard built for GEOL 1420 Exam 2.
 
 ## GitHub Pages Deployment Instructions
 
