@@ -4,6 +4,44 @@
   .perspective-1000 {
     perspective: 1000px;
   }
+
+  .font-serif-vintage {
+    font-family: 'Fraunces', Georgia, serif;
+  }
+
+  .font-display-retro {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Retro Gingham Plaid Pattern (Ref 1 & 4) */
+  .bg-pattern-gingham {
+    background-color: #eaf1e6;
+    background-image: 
+      linear-gradient(90deg, rgba(120, 150, 110, 0.14) 50%, transparent 50%),
+      linear-gradient(rgba(120, 150, 110, 0.14) 50%, transparent 50%);
+    background-size: 28px 28px;
+  }
+
+  .dark .bg-pattern-gingham {
+    background-color: #141a16;
+    background-image: 
+      linear-gradient(90deg, rgba(80, 110, 80, 0.12) 50%, transparent 50%),
+      linear-gradient(rgba(80, 110, 80, 0.12) 50%, transparent 50%);
+    background-size: 28px 28px;
+  }
+
+  /* Retro Polka Dot Pattern (Ref 2 & 3) */
+  .bg-pattern-dots {
+    background-image: radial-gradient(rgba(180, 100, 60, 0.15) 2px, transparent 2px);
+    background-size: 24px 24px;
+  }
+
+  /* Scalloped decorative border edge (Ref 3) */
+  .scallop-top {
+    background: radial-gradient(circle at 10px 0, transparent 0, transparent 10px, currentColor 11px);
+    background-size: 20px 20px;
+    background-repeat: repeat-x;
+  }
 }
 
 @keyframes shake {
@@ -31,9 +69,10 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(150, 150, 150, 0.25);
+  background: rgba(120, 130, 110, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(150, 150, 150, 0.45);
+  background: rgba(120, 130, 110, 0.5);
 }
+

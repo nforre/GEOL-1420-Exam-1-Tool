@@ -2,5 +2,7 @@
   "name": "GEOL 1420 Exam 2 Master",
   "description": "Interactive study guide, animated flashcards, practice quizzes, and engagement tracker for GEOL 1420 Exam 2.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

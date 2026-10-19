@@ -318,23 +318,23 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                 <div className="my-auto py-6 text-center">
                   {!isFlipped ? (
                     <div className="space-y-3">
-                      <div className="text-xs font-semibold uppercase tracking-wider text-stone-400">
-                        Exam Concept / Question
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#788f72] dark:text-stone-400">
+                        Exam Concept / Key Principle
                       </div>
-                      <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900 dark:text-white max-w-2xl mx-auto leading-snug">
+                      <h2 className="text-2xl sm:text-3xl font-serif-vintage font-bold tracking-tight text-stone-900 dark:text-white max-w-2xl mx-auto leading-snug">
                         {currentCard.term}
                       </h2>
                       <p className="text-xs text-stone-400 font-medium">
-                        Click card or press <kbd className="px-1.5 py-0.5 rounded bg-stone-100 dark:bg-slate-700 text-stone-700 dark:text-stone-300 font-mono text-[10px]">Space</kbd> to reveal definition
+                        Click card or press <kbd className="px-1.5 py-0.5 rounded bg-[#f2ede0] dark:bg-slate-700 text-stone-700 dark:text-stone-300 font-mono text-[10px]">Space</kbd> to reveal definition
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-4 text-left max-w-2xl mx-auto">
                       <div>
-                        <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                        <span className="text-xs font-bold text-[#c35d45] uppercase tracking-wider">
                           Definition & Geological Context
                         </span>
-                        <h3 className="text-xl font-bold text-stone-900 dark:text-white mt-1">
+                        <h3 className="text-xl font-bold font-serif-vintage text-stone-900 dark:text-white mt-1">
                           {currentCard.term}
                         </h3>
                       </div>
@@ -344,15 +344,15 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                       </p>
 
                       {currentCard.highlight && (
-                        <div className="p-3 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
-                          <strong className="font-semibold block mb-0.5">Exam Core Takeaway:</strong>
+                        <div className="p-3.5 rounded-2xl bg-[#f5ede0] dark:bg-amber-950/40 border border-[#df9f3b]/50 text-xs text-amber-950 dark:text-amber-200">
+                          <strong className="font-bold block mb-0.5 text-[#b04832] dark:text-amber-300">Exam Core Takeaway:</strong>
                           {currentCard.highlight}
                         </div>
                       )}
 
                       {currentCard.exampleOrNote && (
-                        <div className="text-xs text-stone-500 dark:text-stone-400">
-                          <strong className="font-semibold text-stone-700 dark:text-stone-300">Exam Examples: </strong>
+                        <div className="text-xs text-stone-600 dark:text-stone-400">
+                          <strong className="font-bold text-[#5c7054] dark:text-emerald-400">Exam Examples: </strong>
                           {currentCard.exampleOrNote}
                         </div>
                       )}
@@ -362,7 +362,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
                 {/* Card Bottom Hint / Status */}
                 <div className="pt-2 border-t border-stone-100 dark:border-slate-700/60 flex items-center justify-between text-xs text-stone-400">
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-medium">
                     <RotateCw className="w-3.5 h-3.5" />
                     Tap to flip
                   </span>
@@ -380,7 +380,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             <div className="grid grid-cols-3 gap-3">
               <button
                 onClick={() => handleRate('learning')}
-                className="py-3 px-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/80 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-950/50 text-red-700 dark:text-red-300 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3 px-4 rounded-2xl border-2 border-[#c35d45]/40 bg-[#fdf2ef] hover:bg-[#fae4de] dark:bg-red-950/30 text-[#b04832] dark:text-red-300 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                 title="Mark for frequent review (Press 1)"
               >
                 <HelpCircle className="w-4 h-4 shrink-0" />
@@ -389,7 +389,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
               <button
                 onClick={() => handleRate('reviewing')}
-                className="py-3 px-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/80 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3 px-4 rounded-2xl border-2 border-[#df9f3b]/40 bg-[#fbf6ec] hover:bg-[#f6ebd4] dark:bg-amber-950/30 text-[#96671e] dark:text-amber-300 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                 title="Familiar but need brush-up (Press 2)"
               >
                 <RotateCw className="w-4 h-4 shrink-0" />
@@ -398,7 +398,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
               <button
                 onClick={() => handleRate('mastered')}
-                className="py-3 px-4 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/80 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-semibold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="py-3 px-4 rounded-2xl border-2 border-[#5c7054]/40 bg-[#f2f7ef] hover:bg-[#e4eedf] dark:bg-emerald-950/30 text-[#3d4f36] dark:text-emerald-300 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
                 title="Got it down completely (Press 3)"
               >
                 <CheckCircle className="w-4 h-4 shrink-0" />

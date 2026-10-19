@@ -72,42 +72,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div className="space-y-8 pb-12 animate-in fade-in duration-300">
       {/* Top Hero: Exam Readiness & Engagement Status */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Readiness Overview Banner */}
-        <div className="lg:col-span-2 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 text-white shadow-md relative overflow-hidden">
+        {/* Left 2 Cols: Readiness Overview Banner (Ref 4 & 5 Warm Earthy Aesthetic) */}
+        <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-[#566d50] dark:bg-[#233122] text-[#fbf8ee] shadow-md relative overflow-hidden border-2 border-[#41553c] dark:border-emerald-950">
           {/* Subtle background strata texture */}
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1.5px,transparent_1.5px)] [background-size:18px_18px] pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5" />
-                GEOL 1420 Exam 2 Engagement Tracker
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3d4f38]/60 border border-[#78966f]/40 text-[#fbf8ee] text-xs font-bold">
+                <Sparkles className="w-3.5 h-3.5 text-[#f2b74f]" />
+                GEOL 1420 Exam 2 Review Companion
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Historical Geology Mastery
+              <h1 className="text-2xl sm:text-3xl font-serif-vintage font-bold tracking-tight text-[#fbf8ee]">
+                Historical Geology & Stratigraphy
               </h1>
-              <p className="text-sm text-stone-300 max-w-xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#e0eadb] max-w-xl leading-relaxed">
                 Tracking your comprehension across all 7 review guide chapters: Taphonomy, Preservation Modes, Evolution, Classification, Cladistics, Stratigraphy, and Isotope Geochemistry.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => onNavigateToTab('cards')}
-                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-semibold text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#df9f3b] hover:bg-[#c98e32] text-stone-950 font-bold text-xs sm:text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4" />
                   Study Flashcards
                 </button>
                 <button
                   onClick={() => onNavigateToTab('quiz')}
-                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all border border-white/15 flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#c35d45] hover:bg-[#ab4e38] text-white font-bold text-xs sm:text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                 >
                   <BrainCircuit className="w-4 h-4" />
-                  Practice Exam
+                  Custom Practice Exam
                 </button>
                 <button
                   onClick={() => onNavigateToTab('strata')}
-                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-all border border-white/15 flex items-center gap-2 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-[#fbf8ee] font-semibold text-xs sm:text-sm transition-all border border-white/20 flex items-center gap-2 cursor-pointer"
                 >
                   <Layers className="w-4 h-4" />
                   Strata Visualizer
@@ -116,14 +116,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {/* Circular Readiness Gauge */}
-            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs min-w-[160px] self-center">
+            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[#3d4f38]/70 border border-[#78966f]/30 backdrop-blur-xs min-w-[160px] self-center shadow-inner">
               <div className="relative w-28 h-28 flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                   <circle
                     cx="50"
                     cy="50"
                     r="40"
-                    className="stroke-stone-700"
+                    className="stroke-[#2e3b2a]"
                     strokeWidth="8"
                     fill="transparent"
                   />
@@ -136,32 +136,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     strokeDasharray={251.2}
                     strokeDashoffset={251.2 - (251.2 * readiness) / 100}
                     strokeLinecap="round"
-                    className="text-amber-400 transition-all duration-1000 ease-out"
+                    className="text-[#f2b74f] transition-all duration-1000 ease-out"
                     fill="transparent"
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-2xl font-bold font-mono tracking-tight text-white">{readiness}%</span>
-                  <span className="text-[10px] text-stone-400 uppercase tracking-wider font-medium">Readiness</span>
+                  <span className="text-2xl font-bold font-mono tracking-tight text-[#fbf8ee]">{readiness}%</span>
+                  <span className="text-[10px] text-[#c9dbc3] uppercase tracking-wider font-bold">Readiness</span>
                 </div>
               </div>
               <div className="mt-2 text-center">
-                <span className="text-xs font-semibold text-amber-300">{grade.text}</span>
+                <span className="text-xs font-bold text-[#f2b74f]">{grade.text}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right 1 Col: Quick Engagement Metrics Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
           {/* Streak Card */}
-          <div className="p-4 rounded-xl bg-white dark:bg-slate-800 border border-stone-200 dark:border-slate-700 flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
-              <Flame className="w-6 h-6" />
+          <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-[#5c7054]/30 dark:border-slate-700 flex items-center gap-3.5 shadow-2xs">
+            <div className="p-3 rounded-xl bg-[#fbf3e8] dark:bg-amber-950/50 text-[#c35d45]">
+              <Flame className="w-6 h-6 fill-current" />
             </div>
             <div>
               <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">Daily Streak</div>
-              <div className="text-xl font-bold text-stone-900 dark:text-white font-mono">
+              <div className="text-xl font-bold font-serif-vintage text-stone-900 dark:text-white">
                 {engagement.streakDays} {engagement.streakDays === 1 ? 'day' : 'days'}
               </div>
             </div>

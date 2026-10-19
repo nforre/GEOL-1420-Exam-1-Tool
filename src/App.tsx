@@ -21,6 +21,7 @@ export default function App() {
   const [activeTopicFilter, setActiveTopicFilter] = useState<TopicId | 'all'>('all');
   const [engagement, setEngagement] = useState<UserEngagementState>(() => loadEngagementState());
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isGingham, setIsGingham] = useState(true);
 
   // Dark mode state
   const [isDark, setIsDark] = useState(() => {
@@ -129,7 +130,7 @@ export default function App() {
       const newActivity = {
         id: `act-${Date.now()}`,
         timestamp: Date.now(),
-        action: 'Quiz Finished',
+        action: 'Exam Simulation Finished',
         detail: `Scored ${score}/${total} (${percentage}%) on ${title}`,
       };
 
@@ -151,7 +152,7 @@ export default function App() {
         id: `act-${Date.now()}`,
         timestamp: Date.now(),
         action: 'Speed Match Completed',
-        detail: `Achieved ${score} pts in term-definition matching`,
+        detail: `Achieved ${score} pts in term matching`,
       };
 
       const next: UserEngagementState = {
@@ -191,104 +192,109 @@ export default function App() {
   const readinessScore = calculateReadinessScore(engagement);
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-slate-900 text-stone-900 dark:text-stone-100 font-sans transition-colors flex flex-col selection:bg-amber-500/20 selection:text-amber-900 dark:selection:text-amber-200">
-      {/* Navigation Header */}
-      <Header
-        activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setActiveTopicFilter('all');
-          setActiveTab(tab);
-        }}
-        streakDays={engagement.streakDays}
-        readinessScore={readinessScore}
-        isDark={isDark}
-        onToggleDark={() => setIsDark((prev) => !prev)}
-        soundEnabled={soundEnabled}
-        onToggleSound={() => setSoundEnabled((prev) => !prev)}
-      />
+    <div className={`min-h-screen py-4 sm:py-8 px-2 sm:px-4 md:px-6 transition-colors ${
+      isGingham ? 'bg-pattern-gingham' : 'bg-[#f4efe6] dark:bg-slate-950'
+    }`}>
+      {/* Retro Carrd Desktop Window Shell (Ref 1 & 4) */}
+      <div className="max-w-6xl mx-auto rounded-3xl sm:rounded-[32px] border-4 border-[#5c7054] dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden flex flex-col">
+        {/* Retro Header with window chrome and folder tabs */}
+        <Header
+          activeTab={activeTab}
+          onSelectTab={(tab) => {
+            setActiveTopicFilter('all');
+            setActiveTab(tab);
+          }}
+          streakDays={engagement.streakDays}
+          readinessScore={readinessScore}
+          isDark={isDark}
+          onToggleDark={() => setIsDark((prev) => !prev)}
+          soundEnabled={soundEnabled}
+          onToggleSound={() => setSoundEnabled((prev) => !prev)}
+          isGingham={isGingham}
+          onToggleGingham={() => setIsGingham((prev) => !prev)}
+        />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {activeTab === 'dashboard' && (
-              <DashboardView
-                engagement={engagement}
-                onNavigateToTab={handleNavigateToTab}
-                onResetProgress={handleResetProgress}
-              />
-            )}
+        {/* Content Zone */}
+        <main className="flex-1 w-full p-4 sm:p-6 md:p-8 bg-[#faf7f0] dark:bg-slate-900/90 text-stone-900 dark:text-stone-100 font-sans transition-colors">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {activeTab === 'dashboard' && (
+                <DashboardView
+                  engagement={engagement}
+                  onNavigateToTab={handleNavigateToTab}
+                  onResetProgress={handleResetProgress}
+                />
+              )}
 
-            {activeTab === 'cards' && (
-              <FlashcardsView
-                initialTopic={activeTopicFilter}
-                cardMastery={engagement.cardMastery}
-                bookmarkedCards={engagement.bookmarkedCards}
-                onUpdateMastery={handleUpdateMastery}
-                onToggleBookmark={handleToggleBookmark}
-                onLogStudyCard={handleLogStudyCard}
-              />
-            )}
+              {activeTab === 'cards' && (
+                <FlashcardsView
+                  initialTopic={activeTopicFilter}
+                  cardMastery={engagement.cardMastery}
+                  bookmarkedCards={engagement.bookmarkedCards}
+                  onUpdateMastery={handleUpdateMastery}
+                  onToggleBookmark={handleToggleBookmark}
+                  onLogStudyCard={handleLogStudyCard}
+                />
+              )}
 
-            {activeTab === 'quiz' && (
-              <QuizView
-                initialTopic={activeTopicFilter}
-                onRecordQuizResult={handleRecordQuizResult}
-                onNavigateToTab={(tab) => handleNavigateToTab(tab)}
-              />
-            )}
+              {activeTab === 'quiz' && (
+                <QuizView
+                  initialTopic={activeTopicFilter}
+                  onRecordQuizResult={handleRecordQuizResult}
+                  onNavigateToTab={(tab) => handleNavigateToTab(tab)}
+                />
+              )}
 
-            {activeTab === 'speed' && (
-              <SpeedMatchView
-                bestScore={engagement.speedMatchBestScore}
-                onRecordScore={handleRecordSpeedMatchScore}
-              />
-            )}
+              {activeTab === 'speed' && (
+                <SpeedMatchView
+                  bestScore={engagement.speedMatchBestScore}
+                  onRecordScore={handleRecordSpeedMatchScore}
+                />
+              )}
 
-            {activeTab === 'strata' && (
-              <StrataExplorerView />
-            )}
+              {activeTab === 'strata' && (
+                <StrataExplorerView />
+              )}
 
-            {activeTab === 'guide' && (
-              <StudyGuideView
-                initialTopic={activeTopicFilter}
-                cardMastery={engagement.cardMastery}
-                bookmarkedCards={engagement.bookmarkedCards}
-                onToggleBookmark={handleToggleBookmark}
-                onUpdateMastery={handleUpdateMastery}
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+              {activeTab === 'guide' && (
+                <StudyGuideView
+                  initialTopic={activeTopicFilter}
+                  cardMastery={engagement.cardMastery}
+                  bookmarkedCards={engagement.bookmarkedCards}
+                  onToggleBookmark={handleToggleBookmark}
+                  onUpdateMastery={handleUpdateMastery}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-      {/* Footer */}
-      <footer className="mt-auto border-t border-stone-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xs py-6 text-xs text-stone-500 dark:text-stone-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* Retro Window Bottom Bar */}
+        <footer className="border-t-2 border-[#5c7054]/30 dark:border-slate-800 bg-[#eef5ea] dark:bg-[#18201a] px-4 sm:px-6 py-3 text-xs text-[#44543d] dark:text-stone-400 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-stone-800 dark:text-stone-200">GEOL 1420 Exam 2 Master</span>
+            <span className="font-bold">GEOL 1420 Exam 2 Master</span>
             <span>·</span>
-            <span>Integrated with Course Review PDF (Pages 1–7)</span>
+            <span className="text-[11px] opacity-80">Historical Geology Review (Pages 1–7)</span>
           </div>
 
-          <div className="flex items-center gap-4 text-stone-400">
-            <span>Historical Geology & Stratigraphy</span>
+          <div className="flex items-center gap-3 text-[11px]">
+            <span>(Made for Texas State GEOL 1420)</span>
             <span>·</span>
             <button
               onClick={() => handleNavigateToTab('guide')}
-              className="hover:text-stone-700 dark:hover:text-stone-200 transition-colors cursor-pointer"
+              className="hover:underline font-semibold cursor-pointer"
             >
               Glossary Index
             </button>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
