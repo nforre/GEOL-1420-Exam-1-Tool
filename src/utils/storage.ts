@@ -1,7 +1,7 @@
 import { UserEngagementState, MasteryLevel, TopicId } from '../types';
 import { STUDY_ITEMS } from '../data/geologyData';
 
-const STORAGE_KEY = 'geol_1420_engagement_v1';
+const STORAGE_KEY = 'geol_1420_engagement_v2';
 
 export const getTodayKey = (): string => {
   return new Date().toISOString().slice(0, 10);
@@ -9,18 +9,23 @@ export const getTodayKey = (): string => {
 
 export const getDefaultEngagementState = (): UserEngagementState => {
   const defaultMastery: Record<string, MasteryLevel> = {};
+  const defaultStreaks: Record<string, number> = {};
+
   STUDY_ITEMS.forEach(item => {
     defaultMastery[item.id] = 'unseen';
+    defaultStreaks[item.id] = 0;
   });
 
   return {
-    studyMinutes: 12, // starting baseline so dashboard has meaningful initial progress
-    cardsStudiedCount: 8,
+    studyMinutes: 15,
+    cardsStudiedCount: 0,
     quizzesTaken: 1,
+    learnQuestionsAnswered: 6,
     speedMatchPlays: 0,
     streakDays: 1,
     lastActiveDate: getTodayKey(),
     cardMastery: defaultMastery,
+    termCorrectStreaks: defaultStreaks,
     bookmarkedCards: {},
     quizHistory: [
       {
@@ -61,10 +66,21 @@ export const loadEngagementState = (): UserEngagementState => {
       return def;
     }
     const parsed = JSON.parse(raw) as UserEngagementState;
+
+    if (!parsed.termCorrectStreaks) {
+      parsed.termCorrectStreaks = {};
+    }
+    if (parsed.learnQuestionsAnswered === undefined) {
+      parsed.learnQuestionsAnswered = 0;
+    }
+
     // ensure all study item keys exist
     STUDY_ITEMS.forEach(item => {
       if (!parsed.cardMastery[item.id]) {
         parsed.cardMastery[item.id] = 'unseen';
+      }
+      if (parsed.termCorrectStreaks[item.id] === undefined) {
+        parsed.termCorrectStreaks[item.id] = parsed.cardMastery[item.id] === 'mastered' ? 2 : 0;
       }
     });
 
@@ -98,31 +114,81 @@ export const saveEngagementState = (state: UserEngagementState) => {
   }
 };
 
+/**
+ * Updates a term's mastery level according to Quizlet-style Learn rules:
+ * - Answered correctly twice in a row (streak >= 2) -> "mastered"
+ * - Answered correctly once (streak === 1) -> "reviewing"
+ * - Answered incorrectly when previously right (streak > 0 or previously mastered/reviewing) -> changed to "reviewing" (needs review), streak resets to 0
+ * - Answered incorrectly when never right before -> flagged as "learning", streak resets to 0
+ */
+export const updateTermOnAnswer = (
+  state: UserEngagementState,
+  termId: string,
+  isCorrect: boolean
+): { nextState: UserEngagementState; newLevel: MasteryLevel; newStreak: number } => {
+  const currentLevel = state.cardMastery[termId] || 'unseen';
+  const currentStreak = state.termCorrectStreaks[termId] || 0;
+
+  let newLevel: MasteryLevel = currentLevel;
+  let newStreak = currentStreak;
+
+  if (isCorrect) {
+    newStreak = currentStreak + 1;
+    if (newStreak >= 2) {
+      newLevel = 'mastered';
+    } else {
+      newLevel = 'reviewing';
+    }
+  } else {
+    // Incorrect answer
+    const previouslyGotRight = currentStreak > 0 || currentLevel === 'mastered' || currentLevel === 'reviewing';
+    if (previouslyGotRight) {
+      newLevel = 'reviewing'; // Got wrong after having gotten it right before -> reviewing (Needs Review)
+    } else {
+      newLevel = 'learning'; // Never gotten right -> flagged as learning
+    }
+    newStreak = 0;
+  }
+
+  const nextState: UserEngagementState = {
+    ...state,
+    cardMastery: {
+      ...state.cardMastery,
+      [termId]: newLevel,
+    },
+    termCorrectStreaks: {
+      ...state.termCorrectStreaks,
+      [termId]: newStreak,
+    },
+  };
+
+  return { nextState, newLevel, newStreak };
+};
+
 export const calculateReadinessScore = (state: UserEngagementState): number => {
   const totalCards = STUDY_ITEMS.length;
   if (totalCards === 0) return 0;
 
-  let cardPoints = 0;
+  let termPoints = 0;
   Object.values(state.cardMastery).forEach(level => {
-    if (level === 'mastered') cardPoints += 1.0;
-    else if (level === 'reviewing') cardPoints += 0.65;
-    else if (level === 'learning') cardPoints += 0.35;
+    if (level === 'mastered') termPoints += 1.0;
+    else if (level === 'reviewing') termPoints += 0.55;
+    else if (level === 'learning') termPoints += 0.20;
   });
 
-  const cardMasteryPct = (cardPoints / totalCards) * 100;
+  const termMasteryPct = (termPoints / totalCards) * 100;
 
-  // Quiz factor
-  let avgQuizPct = 70;
+  // Practice exam accuracy factor
+  let avgQuizPct = 65;
   if (state.quizHistory.length > 0) {
     const sum = state.quizHistory.reduce((acc, q) => acc + q.percentage, 0);
     avgQuizPct = sum / state.quizHistory.length;
   }
 
-  // Activity bonus
-  const activityBonus = Math.min(15, (state.cardsStudiedCount / 10) + (state.quizzesTaken * 2));
+  // Activity weight (Mastery 55%, Exam Accuracy 35%, Practice Volume 10%)
+  const volumeBonus = Math.min(10, ((state.learnQuestionsAnswered + state.quizzesTaken * 5) / 10));
 
-  // Weighted readiness: 50% card mastery, 40% quiz performance, 10% activity bonus
-  const finalScore = Math.round((cardMasteryPct * 0.5) + (avgQuizPct * 0.4) + Math.min(10, activityBonus));
+  const finalScore = Math.round((termMasteryPct * 0.55) + (avgQuizPct * 0.35) + volumeBonus);
   return Math.max(0, Math.min(100, finalScore));
 };
 
@@ -145,7 +211,7 @@ export const getTopicMasteryBreakdown = (
     else unseen++;
   });
 
-  const points = (mastered * 1.0) + (reviewing * 0.65) + (learning * 0.35);
+  const points = (mastered * 1.0) + (reviewing * 0.55) + (learning * 0.20);
   const percent = total > 0 ? Math.round((points / total) * 100) : 0;
 
   return { mastered, learning, reviewing, unseen, total, percent };

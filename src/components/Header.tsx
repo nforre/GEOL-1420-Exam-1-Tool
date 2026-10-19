@@ -15,8 +15,8 @@ import {
 import { sound } from '../utils/sound';
 
 interface HeaderProps {
-  activeTab: 'dashboard' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide';
-  onSelectTab: (tab: 'dashboard' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide') => void;
+  activeTab: 'dashboard' | 'learn' | 'quiz' | 'cards' | 'speed' | 'strata' | 'guide';
+  onSelectTab: (tab: 'dashboard' | 'learn' | 'quiz' | 'cards' | 'speed' | 'strata' | 'guide') => void;
   streakDays: number;
   readinessScore: number;
   isDark: boolean;
@@ -40,14 +40,15 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleGingham,
 }) => {
   const navTabs: { 
-    id: 'dashboard' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide'; 
+    id: 'dashboard' | 'learn' | 'quiz' | 'cards' | 'speed' | 'strata' | 'guide'; 
     label: string;
     tag: string;
     colorHex: string;
   }[] = [
     { id: 'dashboard', label: 'Dashboard', tag: 'Overview', colorHex: '#5c7054' },
-    { id: 'cards', label: 'Flashcards', tag: 'Cards', colorHex: '#c35d45' },
+    { id: 'learn', label: 'Learn (2x Master)', tag: 'Quizlet Style', colorHex: '#3d7a5a' },
     { id: 'quiz', label: 'Practice Exam', tag: 'Custom Exam', colorHex: '#df9f3b' },
+    { id: 'cards', label: 'Flashcards', tag: 'Cards', colorHex: '#c35d45' },
     { id: 'speed', label: 'Speed Match', tag: 'Game', colorHex: '#d87355' },
     { id: 'strata', label: 'Strata Explorer', tag: 'Visualizer', colorHex: '#5b727a' },
     { id: 'guide', label: 'Study Guide', tag: 'All Terms', colorHex: '#485844' },

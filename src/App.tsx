@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { TopicId, MasteryLevel, UserEngagementState } from './types';
 import { Header } from './components/Header';
 import { DashboardView } from './components/DashboardView';
+import { LearnView } from './components/LearnView';
 import { FlashcardsView } from './components/FlashcardsView';
 import { QuizView } from './components/QuizView';
 import { SpeedMatchView } from './components/SpeedMatchView';
@@ -12,13 +13,14 @@ import {
   loadEngagementState, 
   saveEngagementState, 
   calculateReadinessScore, 
-  getDefaultEngagementState 
+  getDefaultEngagementState,
+  updateTermOnAnswer
 } from './utils/storage';
 import { sound } from './utils/sound';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide'>('dashboard');
-  const [activeTopicFilter, setActiveTopicFilter] = useState<TopicId | 'all'>('all');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'learn' | 'quiz' | 'cards' | 'speed' | 'strata' | 'guide'>('dashboard');
+  const [activeTopicFilter, setActiveTopicFilter] = useState<TopicId | 'all' | 'needs_review'>('all');
   const [engagement, setEngagement] = useState<UserEngagementState>(() => loadEngagementState());
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [isGingham, setIsGingham] = useState(true);
@@ -64,14 +66,41 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Update card mastery
+  // Answer term via multiple choice (Quizlet Learn or Practice Exam)
+  const handleAnswerTerm = useCallback((termId: string, isCorrect: boolean) => {
+    setEngagement((prev) => {
+      const { nextState, newLevel } = updateTermOnAnswer(prev, termId, isCorrect);
+      const updated: UserEngagementState = {
+        ...nextState,
+        learnQuestionsAnswered: nextState.learnQuestionsAnswered + 1,
+        recentActivity: [
+          {
+            id: `act-${Date.now()}`,
+            timestamp: Date.now(),
+            action: isCorrect ? 'Mastery Updated' : 'Marked for Review',
+            detail: `${isCorrect ? 'Correct on' : 'Missed'} question: status is now ${newLevel}`
+          },
+          ...nextState.recentActivity.slice(0, 14)
+        ]
+      };
+      saveEngagementState(updated);
+      return updated;
+    });
+  }, []);
+
+  // Update card mastery manually from flashcards
   const handleUpdateMastery = useCallback((cardId: string, level: MasteryLevel) => {
     setEngagement((prev) => {
+      const currentStreak = prev.termCorrectStreaks[cardId] || 0;
       const next: UserEngagementState = {
         ...prev,
         cardMastery: {
           ...prev.cardMastery,
           [cardId]: level,
+        },
+        termCorrectStreaks: {
+          ...prev.termCorrectStreaks,
+          [cardId]: level === 'mastered' ? Math.max(2, currentStreak) : 0,
         },
         cardsStudiedCount: prev.cardsStudiedCount + 1,
       };
@@ -177,8 +206,8 @@ export default function App() {
 
   // Switch tabs with optional topic pre-selection
   const handleNavigateToTab = (
-    tab: 'dashboard' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide', 
-    filterTopic?: TopicId
+    tab: 'dashboard' | 'learn' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide', 
+    filterTopic?: TopicId | 'needs_review'
   ) => {
     if (filterTopic) {
       setActiveTopicFilter(filterTopic);
@@ -232,22 +261,35 @@ export default function App() {
                 />
               )}
 
-              {activeTab === 'cards' && (
-                <FlashcardsView
+              {activeTab === 'learn' && (
+                <LearnView
                   initialTopic={activeTopicFilter}
                   cardMastery={engagement.cardMastery}
+                  termCorrectStreaks={engagement.termCorrectStreaks}
                   bookmarkedCards={engagement.bookmarkedCards}
-                  onUpdateMastery={handleUpdateMastery}
+                  onAnswerTerm={handleAnswerTerm}
                   onToggleBookmark={handleToggleBookmark}
-                  onLogStudyCard={handleLogStudyCard}
+                  onNavigateToTab={handleNavigateToTab}
                 />
               )}
 
               {activeTab === 'quiz' && (
                 <QuizView
-                  initialTopic={activeTopicFilter}
+                  initialTopic={activeTopicFilter === 'needs_review' ? 'all' : activeTopicFilter}
                   onRecordQuizResult={handleRecordQuizResult}
+                  onAnswerTerm={handleAnswerTerm}
                   onNavigateToTab={(tab) => handleNavigateToTab(tab)}
+                />
+              )}
+
+              {activeTab === 'cards' && (
+                <FlashcardsView
+                  initialTopic={activeTopicFilter === 'needs_review' ? 'all' : activeTopicFilter}
+                  cardMastery={engagement.cardMastery}
+                  bookmarkedCards={engagement.bookmarkedCards}
+                  onUpdateMastery={handleUpdateMastery}
+                  onToggleBookmark={handleToggleBookmark}
+                  onLogStudyCard={handleLogStudyCard}
                 />
               )}
 
@@ -264,7 +306,7 @@ export default function App() {
 
               {activeTab === 'guide' && (
                 <StudyGuideView
-                  initialTopic={activeTopicFilter}
+                  initialTopic={activeTopicFilter === 'needs_review' ? 'all' : activeTopicFilter}
                   cardMastery={engagement.cardMastery}
                   bookmarkedCards={engagement.bookmarkedCards}
                   onToggleBookmark={handleToggleBookmark}

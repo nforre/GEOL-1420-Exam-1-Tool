@@ -24,12 +24,14 @@ import { sound } from '../utils/sound';
 interface QuizViewProps {
   initialTopic?: TopicId | 'all';
   onRecordQuizResult: (title: string, score: number, total: number, topicId: TopicId | 'all') => void;
-  onNavigateToTab: (tab: 'dashboard' | 'cards' | 'speed' | 'strata' | 'guide') => void;
+  onAnswerTerm?: (termId: string, isCorrect: boolean) => void;
+  onNavigateToTab: (tab: 'dashboard' | 'learn' | 'cards' | 'speed' | 'strata' | 'guide') => void;
 }
 
 export const QuizView: React.FC<QuizViewProps> = ({
   initialTopic = 'all',
   onRecordQuizResult,
+  onAnswerTerm,
   onNavigateToTab,
 }) => {
   // Setup configuration state
@@ -172,11 +174,27 @@ export const QuizView: React.FC<QuizViewProps> = ({
     setExamFinished(true);
     setIsExamActive(false);
 
-    // Calculate score
+    // Calculate score & update term mastery for all answered questions
     let correctCount = 0;
     activeQuiz.forEach((q, idx) => {
-      if (userAnswers[idx] === q.correctIndex) {
+      const userChoice = userAnswers[idx];
+      const isAnswered = userChoice !== undefined;
+      const isCorrect = userChoice === q.correctIndex;
+
+      if (isCorrect) {
         correctCount++;
+      }
+
+      // Sync with term mastery
+      if (isAnswered && onAnswerTerm) {
+        const termId = q.studyItemId || STUDY_ITEMS.find((item) => 
+          q.question.toLowerCase().includes(item.term.toLowerCase()) || 
+          q.explanation.toLowerCase().includes(item.term.toLowerCase())
+        )?.id;
+
+        if (termId) {
+          onAnswerTerm(termId, isCorrect);
+        }
       }
     });
 

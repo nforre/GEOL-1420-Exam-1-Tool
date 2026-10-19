@@ -47,10 +47,12 @@ export interface UserEngagementState {
   studyMinutes: number;
   cardsStudiedCount: number;
   quizzesTaken: number;
+  learnQuestionsAnswered: number;
   speedMatchPlays: number;
   streakDays: number;
   lastActiveDate: string;
   cardMastery: Record<string, MasteryLevel>;
+  termCorrectStreaks: Record<string, number>; // tracks consecutive correct answers (needs 2 for mastered)
   bookmarkedCards: Record<string, boolean>;
   quizHistory: {
     id: string;

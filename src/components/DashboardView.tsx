@@ -20,7 +20,7 @@ import { getTopicMasteryBreakdown, calculateReadinessScore } from '../utils/stor
 
 interface DashboardViewProps {
   engagement: UserEngagementState;
-  onNavigateToTab: (tab: 'cards' | 'quiz' | 'speed' | 'strata' | 'guide', filterTopic?: TopicId) => void;
+  onNavigateToTab: (tab: 'dashboard' | 'learn' | 'cards' | 'quiz' | 'speed' | 'strata' | 'guide', filterTopic?: TopicId | 'needs_review') => void;
   onResetProgress: () => void;
 }
 
@@ -58,14 +58,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     if (score >= 90) return { letter: 'A', text: 'Exam Ready', color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' };
     if (score >= 80) return { letter: 'B', text: 'Solid Progress', color: 'text-teal-700 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-950/40 border-teal-200 dark:border-teal-800' };
     if (score >= 70) return { letter: 'C', text: 'Review Recommended', color: 'text-amber-700 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' };
-    return { letter: 'Need Prep', text: 'Start with Flashcards', color: 'text-stone-700 dark:text-stone-300', bg: 'bg-stone-100 dark:bg-slate-800 border-stone-200 dark:border-slate-700' };
+    return { letter: 'Need Prep', text: 'Start with Learn Mode', color: 'text-stone-700 dark:text-stone-300', bg: 'bg-stone-100 dark:bg-slate-800 border-stone-200 dark:border-slate-700' };
   };
 
   const grade = getGradeInfo(readiness);
 
-  // Identify weak cards (learning or bookmarked)
+  // Identify weak cards (learning or bookmarked or reviewing)
   const weakCards = STUDY_ITEMS.filter(
-    (item) => engagement.cardMastery[item.id] === 'learning' || engagement.bookmarkedCards[item.id]
+    (item) => engagement.cardMastery[item.id] === 'learning' || engagement.cardMastery[item.id] === 'reviewing' || engagement.bookmarkedCards[item.id]
   ).slice(0, 4);
 
   return (
@@ -81,36 +81,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#3d4f38]/60 border border-[#78966f]/40 text-[#fbf8ee] text-xs font-bold">
                 <Sparkles className="w-3.5 h-3.5 text-[#f2b74f]" />
-                GEOL 1420 Exam 2 Review Companion
+                GEOL 1420 Exam 2 Readiness & Recall
               </div>
               <h1 className="text-2xl sm:text-3xl font-serif-vintage font-bold tracking-tight text-[#fbf8ee]">
                 Historical Geology & Stratigraphy
               </h1>
               <p className="text-xs sm:text-sm text-[#e0eadb] max-w-xl leading-relaxed">
-                Tracking your comprehension across all 7 review guide chapters: Taphonomy, Preservation Modes, Evolution, Classification, Cladistics, Stratigraphy, and Isotope Geochemistry.
+                Answer questions correctly <strong>twice</strong> in Learn Mode or Practice Exams to reach Mastered. Errors automatically mark terms for review.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => onNavigateToTab('cards')}
+                  onClick={() => onNavigateToTab('learn')}
                   className="px-4 py-2.5 rounded-xl bg-[#df9f3b] hover:bg-[#c98e32] text-stone-950 font-bold text-xs sm:text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                 >
-                  <BookOpen className="w-4 h-4" />
-                  Study Flashcards
+                  <Sparkles className="w-4 h-4" />
+                  Start Learn Mode (2x)
                 </button>
                 <button
                   onClick={() => onNavigateToTab('quiz')}
                   className="px-4 py-2.5 rounded-xl bg-[#c35d45] hover:bg-[#ab4e38] text-white font-bold text-xs sm:text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                 >
                   <BrainCircuit className="w-4 h-4" />
-                  Custom Practice Exam
+                  Practice Exam
                 </button>
                 <button
-                  onClick={() => onNavigateToTab('strata')}
+                  onClick={() => onNavigateToTab('cards')}
                   className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-[#fbf8ee] font-semibold text-xs sm:text-sm transition-all border border-white/20 flex items-center gap-2 cursor-pointer"
                 >
-                  <Layers className="w-4 h-4" />
-                  Strata Visualizer
+                  <BookOpen className="w-4 h-4" />
+                  Flashcards
                 </button>
               </div>
             </div>
@@ -362,10 +362,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </div>
                   </div>
                   <button
-                    onClick={() => onNavigateToTab('cards', card.topicId)}
-                    className="shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg bg-white dark:bg-slate-700 border border-stone-200 dark:border-slate-600 hover:bg-stone-100 dark:hover:bg-slate-600 text-stone-800 dark:text-stone-200 cursor-pointer"
+                    onClick={() => onNavigateToTab('learn', card.topicId)}
+                    className="shrink-0 px-3 py-1.5 text-xs font-bold rounded-lg bg-[#5c7054] text-white hover:bg-[#4d6046] transition-colors cursor-pointer shadow-2xs"
                   >
-                    Study
+                    Learn
                   </button>
                 </div>
               ))}
@@ -377,12 +377,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           )}
 
-          <div className="mt-4 pt-3 border-t border-stone-100 dark:border-slate-700/60 flex justify-end">
+          <div className="mt-4 pt-3 border-t border-stone-100 dark:border-slate-700/60 flex items-center justify-between">
             <button
               onClick={() => onNavigateToTab('cards')}
-              className="text-xs font-semibold text-amber-700 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-semibold text-stone-500 hover:underline cursor-pointer"
             >
-              Open flashcards
+              Browse Flashcards
+            </button>
+            <button
+              onClick={() => onNavigateToTab('learn', 'needs_review')}
+              className="text-xs font-bold text-[#c35d45] dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              Practice in Learn Mode
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
